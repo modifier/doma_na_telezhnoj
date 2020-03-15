@@ -1,6 +1,6 @@
 import 'phaser';
 
-const PERSON_VELOCITY = 160;
+const PERSON_VELOCITY = 260;
 export default class Game extends Phaser.Scene {
     person = null;
     cursors = null;
@@ -15,6 +15,8 @@ export default class Game extends Phaser.Scene {
             frameWidth: 127, frameHeight: 220
         });
         this.load.image('house1', 'assets/v1/house1.png');
+        this.load.image('house2', 'assets/v1/house2.png');
+        this.load.image('house3', 'assets/v1/house3.png');
     }
 
     create() {
@@ -22,11 +24,18 @@ export default class Game extends Phaser.Scene {
             .image(400, 300, 'background')
             .setScale(0.5);
 
-        const person = this.physics.add
+        this.person = this.physics.add
             .sprite(400, 300, 'person')
             .setScale(0.4)
             .setCollideWorldBounds(true);
 
+
+        const houses = this.physics.add.staticGroup();
+        houses.create(300, 100, 'house1').setScale(0.3).refreshBody();
+        houses.create(395, 105, 'house2').setScale(0.3).refreshBody();
+        houses.create(475, 115, 'house3').setScale(0.3).refreshBody();
+
+        this.physics.add.collider(this.person, houses, this.playerOverlapHouse);
 
         this.anims.create({
             key: 'stay',
@@ -42,7 +51,6 @@ export default class Game extends Phaser.Scene {
         });
 
         this.cursors = this.input.keyboard.createCursorKeys();
-        this.person = person;
     }
 
     update(time: number, delta: number): void {
@@ -76,6 +84,11 @@ export default class Game extends Phaser.Scene {
 
         person.setVelocity(velocityX, velocityY);
     }
+
+    playerOverlapHouse(player, house) {
+        // house.setVisible(false);
+        // console.log(house)
+    }
 }
 
 const config = {
@@ -88,7 +101,7 @@ const config = {
         default: 'arcade',
         arcade: {
             gravity: {y: 0},
-            debug: true
+            debug: false
         }
     },
     scene: Game

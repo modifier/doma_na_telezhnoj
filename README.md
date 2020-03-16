@@ -1,7 +1,9 @@
 # doma_na_telezhnoj
 
-Project based on https://github.com/photonstorm/phaser3-typescript-project-template 
+Project based on https://github.com/photonstorm/phaser3-typescript-project-template
 
+Folder `/docs` published with github pages
+ 
 ## Requirements
 
 [Node.js](https://nodejs.org) is required to install dependencies and run scripts via `npm`.
@@ -13,7 +15,8 @@ Project based on https://github.com/photonstorm/phaser3-typescript-project-templ
 | `npm install` | Install project dependencies |
 | `npm run watch` | Build project and open web server running project, watching for changes |
 | `npm run dev` | Builds project and open web server, but do not watch for changes |
-| `npm run build` | Builds code bundle with production settings (minification, no source maps, etc..) |
+| `npm run build` | Builds code bundle to `docs` folder with production settings (minification, no source maps, etc..) and copy assets from dist|
+| `copy-assets` | Copy assets to `docs/assets` folder from `dist/assets` |
 
 ## Configuring Rollup
 

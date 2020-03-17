@@ -49,7 +49,7 @@ export default {
             exclude: [ 
                 'node_modules/phaser/src/polyfills/requestAnimationFrame.js'
             ],
-            sourceMap: false,
+            sourceMap: true,
             ignoreGlobal: true
         }),
 

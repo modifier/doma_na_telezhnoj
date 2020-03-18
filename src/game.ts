@@ -1,18 +1,14 @@
 import 'phaser';
-import Path = Phaser.Curves.Path;
-import Graphics = Phaser.GameObjects.Graphics;
-import PathFollower = Phaser.GameObjects.PathFollower;
+import TAU = Phaser.Math.TAU;
+import Point = Phaser.Geom.Point;
 
 const PERSON_VELOCITY = 260;
 const DESTRUCTOR_VELOCITY = 100;
 export default class Game extends Phaser.Scene {
     person = null;
     destructor: Phaser.Physics.Arcade.Sprite = null;
+    houses: Phaser.Physics.Arcade.StaticGroup = null;
     cursors = null;
-
-    _graphics: Graphics = null;
-    _pathToHouse1: Path = null;
-    _follower = null;
 
     constructor() {
         super('Game');
@@ -36,41 +32,33 @@ export default class Game extends Phaser.Scene {
     }
 
     create() {
-        this._graphics = this.add.graphics();
         this.add
             .image(400, 300, 'background')
             .setScale(0.5);
 
         this.person = this.physics.add
-            .sprite(400, 300, 'person')
+            .sprite(700, 100, 'person')
             .setScale(0.4)
             .setCollideWorldBounds(true);
 
         this.destructor = this.physics.add
-            .sprite(600, 650, 'destructor')
-            .setScale(0.4)
+            .sprite(200, 550, 'destructor')
+            .setScale(0.3)
             .setCollideWorldBounds(false);
 
-        const houses = this.physics.add.staticGroup();
-        houses.create(300, 100, 'house1').setScale(0.3).refreshBody();
-        houses.create(395, 105, 'house2').setScale(0.3).refreshBody();
-        houses.create(475, 115, 'house3').setScale(0.3).refreshBody();
-
-        const house1 = <Phaser.Physics.Arcade.Body>houses.children.entries[0].body;
-        this._pathToHouse1 = new Phaser.Curves.Path(600, 650).lineTo(house1.x, house1.y +  house1.height);
-
-        this._follower = {t: 0, vec: new Phaser.Math.Vector2()};
-        this.tweens.add({
-            targets: this._follower,
-            t: 1,
-            ease: 'Linear',
-            duration: 5000,
-            repeat: -1
+        this.destructor.setData('last_changed_time', 0);
+        this.physics.world.on('worldbounds', () => {
+            console.log('bum')
         });
 
+        this.houses = this.physics.add.staticGroup();
+        this.houses.create(300, 100, 'house1').setScale(0.3).refreshBody();
+        this.houses.create(395, 105, 'house2').setScale(0.3).refreshBody();
+        this.houses.create(475, 115, 'house3').setScale(0.3).refreshBody();
+
         // interactions of game objects
-        this.physics.add.collider(this.person, houses, this.personOverlapHouse);
-        this.physics.add.collider(this.destructor, houses, this.destructorOverlapHouse);
+        this.physics.add.collider(this.person, this.houses, this.personOverlapHouse);
+        this.physics.add.collider(this.destructor, this.houses, this.destructorOverlapHouse);
         this.physics.add.collider(this.person, this.destructor, this.personOverlapDestructor);
 
         this.anims.create({
@@ -126,26 +114,35 @@ export default class Game extends Phaser.Scene {
 
         person.setVelocity(velocityX, velocityY);
 
-        // destructor paths
-        this._pathToHouse1.getPoint(this._follower.t, this._follower.vec);
-        this.destructor.setPosition(this._follower.vec.x, this._follower.vec.y);
+        // destructor path
         this.destructor.play('destructor_move', true);
+        const house1 = <Phaser.Physics.Arcade.Body>this.houses.children.entries[0].body;
+        const angle = Phaser.Math.Angle.Between(this.destructor.x, this.destructor.y, house1.x, house1.y);
+        this.destructor.setFlipX(angle < 0);
+        if (!Phaser.Geom.Rectangle.ContainsPoint(this.physics.world.bounds, new Point(this.destructor.x, this.destructor.y))) {
+            this.destructor.setData('move_back', false);
+        }
 
-        this._graphics.clear();
-        this._graphics.lineStyle(2, 0x000000, 1);
-        this._pathToHouse1.draw(this._graphics);
+        if (this.destructor.getData('move_back')) {
+            const velocity = this.physics.velocityFromRotation(angle, DESTRUCTOR_VELOCITY);
+            this.destructor.setVelocity(-1 * velocity.x, -1 * velocity.y)
+        } else if (time - this.destructor.getData('last_changed_time') > 1200) {
+            this.destructor.setData('last_changed_time', time);
+            const velocity = this.physics.velocityFromRotation(angle + (Math.random() > 0.5 ? -1 : 1) * Math.random() * TAU / 2, DESTRUCTOR_VELOCITY);
+            this.destructor.setVelocity(velocity.x, velocity.y);
+        }
     }
 
     personOverlapHouse(person, house) {
-        // house.setVisible(false);
-        // console.log(house)
     }
 
-    personOverlapDestructor(person, destructor) {
+    personOverlapDestructor(person, destructor: Phaser.Physics.Arcade.Sprite) {
+        destructor.setData('move_back', true);
     }
 
     destructorOverlapHouse(destructor, house) {
-        // house.setVisible(false);
+        house.setVisible(false);
+        destructor.setData('move_back', true);
     }
 }
 

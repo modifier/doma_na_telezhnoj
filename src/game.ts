@@ -94,7 +94,7 @@ export default class Game extends Phaser.Scene {
             cursors.up.isDown ||
             cursors.down.isDown
         ) {
-            person.anims.play('person_stay', true);
+            person.anims.play('person_walk', true);
         } else {
             person.anims.play('person_stay', true);
         }

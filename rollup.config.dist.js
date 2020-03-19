@@ -1,7 +1,8 @@
 import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
-import { uglify } from 'rollup-plugin-uglify';
+import {uglify} from 'rollup-plugin-uglify';
+import html from 'rollup-plugin-fill-html';
 import typescript from 'rollup-plugin-typescript2';
 
 export default {
@@ -16,7 +17,7 @@ export default {
     //  You can also use 'umd' if you need to ingest your game into another system.
     //  The 'intro' property can be removed if using Phaser 3.21 or above. Keep it for earlier versions.
     output: {
-        file: './docs/game.js',
+        file: './docs/game-[hash].js',
         name: 'MyGame',
         format: 'iife',
         sourcemap: false,
@@ -37,7 +38,7 @@ export default {
 
         //  Parse our .ts source files
         resolve({
-            extensions: [ '.ts', '.tsx' ]
+            extensions: ['.ts', '.tsx']
         }),
 
         //  We need to convert the Phaser 3 CJS modules into a format Rollup can use:
@@ -46,7 +47,7 @@ export default {
                 'node_modules/eventemitter3/**',
                 'node_modules/phaser/**'
             ],
-            exclude: [ 
+            exclude: [
                 'node_modules/phaser/src/polyfills/requestAnimationFrame.js'
             ],
             sourceMap: false,
@@ -59,7 +60,11 @@ export default {
         //  See https://www.npmjs.com/package/rollup-plugin-uglify for config options
         uglify({
             mangle: false
-        })
+        }),
 
+        html({
+            template: './src/template.html',
+            filename: 'index.html'
+        })
     ]
 };

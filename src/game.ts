@@ -1,12 +1,11 @@
 import 'phaser';
-import TAU = Phaser.Math.TAU;
-import Point = Phaser.Geom.Point;
+import Destructor from "./Destructor";
 
 const PERSON_VELOCITY = 260;
 const DESTRUCTOR_VELOCITY = 100;
 export default class Game extends Phaser.Scene {
     person = null;
-    destructor: Phaser.Physics.Arcade.Sprite = null;
+    destructors: Destructor[];
     houses: Phaser.Physics.Arcade.StaticGroup = null;
     cursors = null;
 
@@ -41,25 +40,28 @@ export default class Game extends Phaser.Scene {
             .setScale(0.4)
             .setCollideWorldBounds(true);
 
-        this.destructor = this.physics.add
-            .sprite(200, 550, 'destructor')
-            .setScale(0.3)
-            .setCollideWorldBounds(false);
+        this.destructors = [
+            new Destructor(this, 100, 650, 'destructor', DESTRUCTOR_VELOCITY - 10),
+            new Destructor(this, 300, 650, 'destructor', DESTRUCTOR_VELOCITY),
+            new Destructor(this, 800, 750, 'destructor', DESTRUCTOR_VELOCITY + 40)
+        ];
 
-        this.destructor.setData('last_changed_time', 0);
         this.physics.world.on('worldbounds', () => {
             console.log('bum')
         });
 
         this.houses = this.physics.add.staticGroup();
         this.houses.create(300, 100, 'house1').setScale(0.3).refreshBody();
-        this.houses.create(395, 105, 'house2').setScale(0.3).refreshBody();
-        this.houses.create(475, 115, 'house3').setScale(0.3).refreshBody();
+        this.houses.create(395, 105.6, 'house2').setScale(0.3).refreshBody();
+        this.houses.create(475, 116.4, 'house3').setScale(0.3).refreshBody();
 
         // interactions of game objects
         this.physics.add.collider(this.person, this.houses, this.personOverlapHouse);
-        this.physics.add.collider(this.destructor, this.houses, this.destructorOverlapHouse);
-        this.physics.add.collider(this.person, this.destructor, this.personOverlapDestructor);
+        this.destructors.forEach(d => {
+            this.physics.add.collider(d, this.houses, this.destructorOverlapHouse);
+            this.physics.add.collider(this.person, d, this.personOverlapDestructor);
+        });
+
 
         this.anims.create({
             key: 'person_stay',
@@ -114,35 +116,23 @@ export default class Game extends Phaser.Scene {
 
         person.setVelocity(velocityX, velocityY);
 
-        // destructor path
-        this.destructor.play('destructor_move', true);
-        const house1 = <Phaser.Physics.Arcade.Body>this.houses.children.entries[0].body;
-        const angle = Phaser.Math.Angle.Between(this.destructor.x, this.destructor.y, house1.x, house1.y);
-        this.destructor.setFlipX(angle < 0);
-        if (!Phaser.Geom.Rectangle.ContainsPoint(this.physics.world.bounds, new Point(this.destructor.x, this.destructor.y))) {
-            this.destructor.setData('move_back', false);
-        }
+        const aliveHouses = this.houses.children.entries.filter(h => h.active);
 
-        if (this.destructor.getData('move_back')) {
-            const velocity = this.physics.velocityFromRotation(angle, DESTRUCTOR_VELOCITY);
-            this.destructor.setVelocity(-1 * velocity.x, -1 * velocity.y)
-        } else if (time - this.destructor.getData('last_changed_time') > 1200) {
-            this.destructor.setData('last_changed_time', time);
-            const velocity = this.physics.velocityFromRotation(angle + (Math.random() > 0.5 ? -1 : 1) * Math.random() * TAU / 2, DESTRUCTOR_VELOCITY);
-            this.destructor.setVelocity(velocity.x, velocity.y);
-        }
+        this.destructors.forEach(d => d.update(aliveHouses))
     }
 
     personOverlapHouse(person, house) {
     }
 
-    personOverlapDestructor(person, destructor: Phaser.Physics.Arcade.Sprite) {
-        destructor.setData('move_back', true);
+    personOverlapDestructor(person, destructor: Destructor) {
+        destructor.startMovingBack();
     }
 
-    destructorOverlapHouse(destructor, house) {
-        house.setVisible(false);
-        destructor.setData('move_back', true);
+    destructorOverlapHouse(destructor: Destructor, house: Phaser.Physics.Arcade.Sprite) {
+        house.disableBody(true, true);
+        destructor.startMovingBack();
+        // TODO disable only target house
+        // TODO only for one destructor should call (need to use texture key)
     }
 }
 

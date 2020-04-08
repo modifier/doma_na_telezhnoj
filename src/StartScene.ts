@@ -1,6 +1,6 @@
 import GAMEOBJECT_POINTER_UP = Phaser.Input.Events.GAMEOBJECT_POINTER_UP;
-import GAMEOBJECT_POINTER_OVER = Phaser.Input.Events.GAMEOBJECT_POINTER_OVER;
-import GAMEOBJECT_POINTER_OUT = Phaser.Input.Events.GAMEOBJECT_POINTER_OUT;
+import GAMEOBJECT_OVER = Phaser.Input.Events.GAMEOBJECT_OVER;
+import GAMEOBJECT_OUT = Phaser.Input.Events.GAMEOBJECT_OUT;
 
 export default class StartScene extends Phaser.Scene {
     constructor(props) {
@@ -13,6 +13,7 @@ export default class StartScene extends Phaser.Scene {
             .setScale(0.5)
 
         const centerY = this.cameras.main.centerY
+        const centerX = this.cameras.main.centerX
         const rightCorner = this.cameras.main.width
 
         this.add.text(
@@ -23,7 +24,7 @@ export default class StartScene extends Phaser.Scene {
 
 
         const startGameText = this.add.text(
-            this.cameras.main.centerX,
+            centerX,
             centerY,
             'Начать игру',
             {
@@ -35,16 +36,24 @@ export default class StartScene extends Phaser.Scene {
         startGameText.on(GAMEOBJECT_POINTER_UP, () => {
             this.scene.launch('game_scene')
         })
+
         this.input.keyboard.on('keyup-ENTER', () => {
             this.scene.launch('game_scene')
         })
 
-        startGameText.on(GAMEOBJECT_POINTER_OVER, () => {
+        const person = this.add.image(centerX, centerY + 100, 'person', 4)
+            .setScale(0.3)
+
+        this.input.setPollAlways()
+        this.input.setPollRate(500)
+        this.input.on(GAMEOBJECT_OVER, () => {
             this.input.setDefaultCursor('pointer')
+            person.setFrame(6)
         })
 
-        startGameText.on(GAMEOBJECT_POINTER_OUT, () => {
+        this.input.on(GAMEOBJECT_OUT, () => {
             this.input.setDefaultCursor('default')
+            person.setFrame(4)
         })
 
         this.add.text(

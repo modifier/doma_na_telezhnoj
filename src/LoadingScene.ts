@@ -7,7 +7,7 @@ export default class LoadingScene extends Phaser.Scene {
 
     create() {
         this.loaderText = this.add.text(5, 10, '', {font: '20px Amatic SC', fill: '#00ff00'})
-        this.load.image('background', 'assets/v1/background.png');
+        this.load.image('background', 'assets/v2/background.png');
 
         this.load.spritesheet('person', 'assets/v2/person-animated.png', {
             frameWidth: 194, frameHeight: 348
@@ -42,6 +42,7 @@ export default class LoadingScene extends Phaser.Scene {
         } else {
             this.loaderText.setText('Loading: 100%')
             this.scene.launch('start_scene')
+            this.scene.remove('loading_scene')
         }
     }
 }

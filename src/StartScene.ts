@@ -3,14 +3,15 @@ import GAMEOBJECT_OVER = Phaser.Input.Events.GAMEOBJECT_OVER;
 import GAMEOBJECT_OUT = Phaser.Input.Events.GAMEOBJECT_OUT;
 
 export default class StartScene extends Phaser.Scene {
-    constructor(props) {
+    constructor() {
         super("start_scene")
     }
 
     create() {
-        this.add
-            .image(400, 300, 'background')
-            .setScale(0.5)
+        this.cameras.main.setBackgroundColor(0xFFFFFF)
+
+        this.add.image(400, 300, 'background')
+            .setAlpha(0.5)
 
         const centerY = this.cameras.main.centerY
         const centerX = this.cameras.main.centerX
@@ -39,6 +40,7 @@ export default class StartScene extends Phaser.Scene {
 
         this.input.keyboard.on('keyup-ENTER', () => {
             this.scene.launch('game_scene')
+            this.scene.remove('start_scene')
         })
 
         const person = this.add.image(centerX, centerY + 100, 'person', 4)

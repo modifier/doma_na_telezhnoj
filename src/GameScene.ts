@@ -14,9 +14,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     create() {
-        this.add
-            .image(400, 300, 'background')
-            .setScale(0.5);
+        this.add.image(400, 300, 'background')
 
         this.person = this.physics.add
             .sprite(700, 300, 'person')

@@ -1,6 +1,12 @@
 import TAU = Phaser.Math.TAU;
 import Point = Phaser.Geom.Point;
 
+const TextureToScale = {
+    'destructor1': 0.3,
+    'destructor2': 0.3,
+    'destructor3': 0.3,
+}
+
 export default class Destructor extends Phaser.Physics.Arcade.Sprite {
     _initVelocity: number;
     _initialX: number;
@@ -25,7 +31,7 @@ export default class Destructor extends Phaser.Physics.Arcade.Sprite {
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
 
-        this.setScale(0.3);
+        this.setScale(TextureToScale[texture]);
         this.setCollideWorldBounds(false);
 
         this.scene.time.addEvent({
@@ -36,6 +42,27 @@ export default class Destructor extends Phaser.Physics.Arcade.Sprite {
             },
             repeat: -1
         })
+    }
+
+    static initAnimations(anims: any) {
+        anims.create({
+            key: 'destructor1_move',
+            frames: anims.generateFrameNumbers('destructor1', {start: 0, end: 2}),
+            frameRate: 10,
+            repeat: -1
+        });
+        anims.create({
+            key: 'destructor2_move',
+            frames: anims.generateFrameNumbers('destructor2', {start: 0, end: 1}),
+            frameRate: 10,
+            repeat: -1
+        });
+        anims.create({
+            key: 'destructor3_move',
+            frames: anims.generateFrameNumbers('destructor3', {start: 0, end: 1}),
+            frameRate: 5,
+            repeat: -1
+        });
     }
 
     getTargetHouse(): Phaser.GameObjects.GameObject {
@@ -93,6 +120,6 @@ export default class Destructor extends Phaser.Physics.Arcade.Sprite {
             this._moveToHouse();
         }
 
-        this.play('destructor_move', true);
+        this.play(`${this.texture.key}_move`, true);
     }
 }

@@ -23,10 +23,11 @@ export default class GameScene extends Phaser.Scene {
             .setScale(0.3)
             .setCollideWorldBounds(true);
 
+        Destructor.initAnimations(this.anims)
         this.destructors = [
-            new Destructor(this, 100, 650, 'destructor', DESTRUCTOR_VELOCITY - 10),
-            new Destructor(this, 300, 650, 'destructor', DESTRUCTOR_VELOCITY),
-            new Destructor(this, 800, 750, 'destructor', DESTRUCTOR_VELOCITY + 40)
+            new Destructor(this, 100, 650, 'destructor1', DESTRUCTOR_VELOCITY - 10),
+            new Destructor(this, 300, 650, 'destructor2', DESTRUCTOR_VELOCITY),
+            new Destructor(this, 800, 750, 'destructor3', DESTRUCTOR_VELOCITY + 40)
         ];
 
         this.physics.world.on('worldbounds', () => {
@@ -67,13 +68,6 @@ export default class GameScene extends Phaser.Scene {
         this.anims.create({
             key: 'person_walk',
             frames: this.anims.generateFrameNumbers('person', {start: 0, end: 1}),
-            frameRate: 10,
-            repeat: -1
-        });
-
-        this.anims.create({
-            key: 'destructor_move',
-            frames: this.anims.generateFrameNumbers('destructor', {start: 0, end: 1}),
             frameRate: 10,
             repeat: -1
         });

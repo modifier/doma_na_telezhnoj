@@ -6,7 +6,8 @@ export default class GameScene extends Phaser.Scene {
     person = null;
     destructors: Destructor[];
     houses: Phaser.Physics.Arcade.StaticGroup = null;
-    cursors = null;
+    cursorKeys = null;
+    moveKeys = null;
 
     constructor() {
         super('game_scene');
@@ -77,34 +78,29 @@ export default class GameScene extends Phaser.Scene {
             repeat: -1
         });
 
-        this.cursors = this.input.keyboard.createCursorKeys();
+        this.cursorKeys = this.input.keyboard.createCursorKeys();
+        this.moveKeys = this.input.keyboard.addKeys('W,A,S,D')
     }
 
     update(time: number, delta: number): void {
-        const cursors = this.cursors;
         const person = this.person;
 
-        if (
-            cursors.left.isDown ||
-            cursors.right.isDown ||
-            cursors.up.isDown ||
-            cursors.down.isDown
-        ) {
+        if (this._isPersonWalk()) {
             person.anims.play('person_walk', true);
         } else {
             person.anims.play('person_stay', true);
         }
         let velocityX = 0;
-        if (cursors.left.isDown) {
+        if (this._isPersonWalk_left()) {
             velocityX = -1 * PERSON_VELOCITY
-        } else if (cursors.right.isDown) {
+        } else if (this._isPersonWalk_right()) {
             velocityX = PERSON_VELOCITY
         }
 
         let velocityY = 0;
-        if (cursors.up.isDown) {
+        if (this._isPersonWalk_up()) {
             velocityY = -1 * PERSON_VELOCITY
-        } else if (cursors.down.isDown) {
+        } else if (this._isPersonWalk_down()) {
             velocityY = PERSON_VELOCITY
         }
 
@@ -127,5 +123,28 @@ export default class GameScene extends Phaser.Scene {
         destructor.startMovingBack();
         // TODO disable only target house
         // TODO only for one destructor should call (need to use texture key)
+    }
+
+    _isPersonWalk_left() {
+        return this.cursorKeys.left.isDown || this.moveKeys.A.isDown
+    }
+
+    _isPersonWalk_right() {
+        return this.cursorKeys.right.isDown || this.moveKeys.D.isDown
+    }
+
+    _isPersonWalk_up() {
+        return this.cursorKeys.up.isDown || this.moveKeys.W.isDown
+    }
+
+    _isPersonWalk_down() {
+        return this.cursorKeys.down.isDown || this.moveKeys.S.isDown
+    }
+
+    _isPersonWalk() {
+        return this._isPersonWalk_left() ||
+            this._isPersonWalk_right() ||
+            this._isPersonWalk_up() ||
+            this._isPersonWalk_down()
     }
 }

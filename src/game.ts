@@ -5,7 +5,7 @@ import StartScene from "./StartScene";
 import GameScene from "./GameScene";
 
 const config = {
-    type: Phaser.WEBGL,
+    type: Phaser.AUTO,
     width: 800,
     height: 600,
     canvasStyle: 'border: 1px solid red;',

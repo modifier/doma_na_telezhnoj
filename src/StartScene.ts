@@ -1,6 +1,6 @@
 import GAMEOBJECT_POINTER_UP = Phaser.Input.Events.GAMEOBJECT_POINTER_UP;
-import POINTER_OUT = Phaser.Input.Events.POINTER_OUT;
-import POINTER_OVER = Phaser.Input.Events.POINTER_OVER;
+import GAMEOBJECT_POINTER_OVER = Phaser.Input.Events.GAMEOBJECT_POINTER_OVER;
+import GAMEOBJECT_POINTER_OUT = Phaser.Input.Events.GAMEOBJECT_POINTER_OUT;
 
 export default class StartScene extends Phaser.Scene {
     constructor(props) {
@@ -35,12 +35,15 @@ export default class StartScene extends Phaser.Scene {
         startGameText.on(GAMEOBJECT_POINTER_UP, () => {
             this.scene.launch('game_scene')
         })
+        this.input.keyboard.on('keyup-ENTER', () => {
+            this.scene.launch('game_scene')
+        })
 
-        startGameText.on('pointerover', () => {
+        startGameText.on(GAMEOBJECT_POINTER_OVER, () => {
             this.input.setDefaultCursor('pointer')
         })
 
-        startGameText.on('pointerout', () => {
+        startGameText.on(GAMEOBJECT_POINTER_OUT, () => {
             this.input.setDefaultCursor('default')
         })
 

@@ -77,6 +77,7 @@ export default class Destructor extends Phaser.Physics.Arcade.Sprite {
         super.update(...args);
         let targetHouseActive = this._targetHouse && this._targetHouse.active;
 
+        // TODO update target only if not moving back
         if (!targetHouseActive || Phaser.Geom.Rectangle.ContainsPoint(this.getBounds(), new Point(this._initialX, this._initialY))) {
             if (aliveHouses.length > 0) {
                 let index = Math.ceil(Math.random() * (aliveHouses.length - 1));

@@ -19,9 +19,11 @@ export default {
         file: './dist/game.js',
         name: 'MyGame',
         format: 'iife',
-        sourcemap: true,
+        sourcemap: false,
         intro: 'var global = window;'
     },
+
+    treeshake: false,
 
     plugins: [
 
@@ -44,12 +46,12 @@ export default {
         commonjs({
             include: [
                 'node_modules/eventemitter3/**',
-                'node_modules/phaser/**'
+                'node_modules/phaser/src/**'
             ],
             exclude: [ 
                 'node_modules/phaser/src/polyfills/requestAnimationFrame.js'
             ],
-            sourceMap: true,
+            sourceMap: false,
             ignoreGlobal: true
         }),
 
@@ -58,7 +60,7 @@ export default {
 
         //  See https://www.npmjs.com/package/rollup-plugin-serve for config options
         serve({
-            open: true,
+            open: false,
             contentBase: 'dist',
             host: 'localhost',
             port: 10001,

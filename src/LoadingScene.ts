@@ -7,7 +7,11 @@ export default class LoadingScene extends Phaser.Scene {
 
     create() {
         this.loaderText = this.add.text(5, 10, '', {font: '20px Amatic SC', fill: '#00ff00'})
+
         this.load.image('background', 'assets/v2/background.png');
+
+        // controls
+        this.load.image('nav_buttons', 'assets/v2/nav-buttons.png');
 
         this.load.spritesheet('person', 'assets/v2/person-animated.png', {
             frameWidth: 194, frameHeight: 348
@@ -27,11 +31,6 @@ export default class LoadingScene extends Phaser.Scene {
         this.load.image('house2', 'assets/v2/house2.png');
         this.load.image('house3', 'assets/v2/house3.png');
         this.load.image('house4', 'assets/v2/house4.png');
-
-        this.load.image('key_up', 'assets/v2/up.png');
-        this.load.image('key_down', 'assets/v2/down.png');
-        this.load.image('key_left', 'assets/v2/left.png');
-        this.load.image('key_right', 'assets/v2/right.png');
 
         this.load.start()
     }

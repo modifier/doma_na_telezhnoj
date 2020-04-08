@@ -26,7 +26,7 @@ export default class StartScene extends Phaser.Scene {
 
         const startGameText = this.add.text(
             centerX,
-            centerY,
+            centerY - 35,
             'Начать игру',
             {
                 font: '40px Amatic SC', fill: '#000000'
@@ -43,7 +43,7 @@ export default class StartScene extends Phaser.Scene {
             this.scene.remove('start_scene')
         })
 
-        const person = this.add.image(centerX, centerY + 100, 'person', 4)
+        const person = this.add.image(centerX, centerY + 70, 'person', 4)
             .setScale(0.3)
 
         this.input.setPollAlways()
@@ -60,16 +60,12 @@ export default class StartScene extends Phaser.Scene {
 
         this.add.text(
             rightCorner - 50,
-            centerY + 55,
+            centerY + 105,
             'Используй для движения:',
-            {font: '25px Amatic SC', fill: '#000000'})
+            {font: '28px Amatic SC', fill: '#000000'})
             .setOrigin(1, 0)
 
 
-        this.add.image(rightCorner - 150, centerY + 120, 'key_up').setScale(0.9)
-        this.add.image(rightCorner - 200, centerY + 170, 'key_left').setScale(0.9)
-        this.add.image(rightCorner - 100, centerY + 170, 'key_right').setScale(0.9)
-        this.add.image(rightCorner - 150, centerY + 220, 'key_down').setScale(0.9)
-
+        this.add.image(rightCorner - 150, centerY + 200, 'nav_buttons').setScale(0.25)
     }
 }

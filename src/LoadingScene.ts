@@ -9,8 +9,8 @@ export default class LoadingScene extends Phaser.Scene {
         this.loaderText = this.add.text(5, 10, '', {font: '20px Amatic SC', fill: '#00ff00'})
         this.load.image('background', 'assets/v1/background.png');
 
-        this.load.spritesheet('person', 'assets/v1/person-animated.png', {
-            frameWidth: 127, frameHeight: 220
+        this.load.spritesheet('person', 'assets/v2/person-animated.png', {
+            frameWidth: 194, frameHeight: 348
         });
         this.load.spritesheet('destructor', 'assets/v1/destructor-animated.png', {
             frameWidth: 352, frameHeight: 203

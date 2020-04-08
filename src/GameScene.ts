@@ -20,7 +20,7 @@ export default class GameScene extends Phaser.Scene {
 
         this.person = this.physics.add
             .sprite(700, 300, 'person')
-            .setScale(0.4)
+            .setScale(0.3)
             .setCollideWorldBounds(true);
 
         this.destructors = [

@@ -18,7 +18,7 @@ export default class StartScene extends Phaser.Scene {
         const rightCorner = this.cameras.main.width
 
         this.add.text(
-            100,
+            160,
             centerY - 150,
             ['Защищай дома, не давай пройти технике.', 'Тебе необходимо продержаться 1 минуту'],
             {font: '25px Amatic SC', fill: '#000000', align: 'left'})
@@ -29,7 +29,7 @@ export default class StartScene extends Phaser.Scene {
             centerY - 35,
             'Начать игру',
             {
-                font: '40px Amatic SC', fill: '#000000'
+                font: '50px Amatic SC', fill: '#000000'
             })
             .setOrigin(0.5)
             .setInteractive()

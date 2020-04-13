@@ -40,8 +40,7 @@ export default class LoadingScene extends Phaser.Scene {
             this.loaderText.setText(`Loading: ${Math.ceil(this.load.progress * 100)}%`)
         } else {
             this.loaderText.setText('Loading: 100%')
-            this.scene.launch('start_scene')
-            this.scene.remove('loading_scene')
+            this.scene.start('start_scene')
         }
     }
 }

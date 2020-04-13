@@ -4,8 +4,9 @@ import LoadingScene from "./LoadingScene";
 import StartScene from "./StartScene";
 import GameScene from "./GameScene";
 
-const development = true
 
+// @ts-ignore
+const development = DEVELOPMENT_MODE
 const config = {
     type: Phaser.AUTO,
     width: 800,

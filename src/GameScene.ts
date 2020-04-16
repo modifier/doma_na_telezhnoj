@@ -1,4 +1,5 @@
 import Destructor from "./Destructor";
+import Timer from "./Timer";
 import {GameState} from "./GameState";
 import POINTER_UP = Phaser.Input.Events.POINTER_UP;
 
@@ -10,6 +11,8 @@ export default class GameScene extends Phaser.Scene {
     houses: Phaser.Physics.Arcade.StaticGroup = null;
     cursorKeys = null;
     moveKeys = null;
+    timer: Timer = null;
+    gameEnded: boolean = false;
 
     constructor() {
         super('game_scene');
@@ -20,7 +23,7 @@ export default class GameScene extends Phaser.Scene {
 
         this.person = this.physics.add
             .sprite(700, 300, 'person')
-            .setScale(0.3)
+            .setScale(0.27)
             .setCollideWorldBounds(true);
 
         Destructor.initAnimations(this.anims)
@@ -89,9 +92,16 @@ export default class GameScene extends Phaser.Scene {
                 musicIcon.setTexture('music_off');
             }
         })
+
+        this.timer = new Timer(this, 350, 10, () => {
+            this._stopGameOnTime()
+        });
+        this.timer.start()
     }
 
     update(time: number, delta: number): void {
+        if (this.gameEnded) return
+
         const person = this.person;
 
         if (this._isPersonWalk()) {
@@ -115,9 +125,11 @@ export default class GameScene extends Phaser.Scene {
 
         person.setVelocity(velocityX, velocityY);
 
-        const aliveHouses = this.houses.children.entries.filter(h => h.active);
+        const aliveHouses = this._getAliveHouses();
 
         this.destructors.forEach(d => d.update(aliveHouses))
+
+        this.timer.update()
     }
 
     personOverlapHouse(person, house) {
@@ -127,9 +139,12 @@ export default class GameScene extends Phaser.Scene {
         destructor.startMovingBack();
     }
 
-    destructorOverlapHouse(destructor: Destructor, house: Phaser.Physics.Arcade.Sprite) {
+    destructorOverlapHouse = (destructor: Destructor, house: Phaser.Physics.Arcade.Sprite) => {
         house.disableBody(true, true);
         destructor.startMovingBack();
+        if (this._getAliveHouses().length == 0) {
+            this._stopGameOnDestroyAllHouses()
+        }
         // TODO disable only target house
         // TODO only for one destructor should call (need to use texture key)
     }
@@ -155,5 +170,27 @@ export default class GameScene extends Phaser.Scene {
             this._isPersonWalk_right() ||
             this._isPersonWalk_up() ||
             this._isPersonWalk_down()
+    }
+
+    _getAliveHouses() {
+        return this.houses.children.entries.filter(h => h.active);
+    }
+
+    _stopGameOnDestroyAllHouses() {
+        this.timer.stop();
+        this._processStop();
+    }
+
+    _stopGameOnTime() {
+        this._processStop();
+        console.log('alive houses ' + this._getAliveHouses().length);
+    }
+
+    _processStop() {
+        this.gameEnded = true;
+        this.destructors.forEach(d => {
+            d.stop()
+        });
+        this.person.setVelocity(0);
     }
 }

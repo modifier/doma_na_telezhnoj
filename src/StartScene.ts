@@ -35,12 +35,11 @@ export default class StartScene extends Phaser.Scene {
             .setInteractive()
 
         startGameText.on(GAMEOBJECT_POINTER_UP, () => {
-            this.scene.launch('game_scene')
+            this.scene.start('game_scene')
         })
 
         this.input.keyboard.on('keyup-ENTER', () => {
-            this.scene.launch('game_scene')
-            this.scene.remove('start_scene')
+            this.scene.start('game_scene')
         })
 
         const person = this.add.image(centerX, centerY + 70, 'person', 4)

@@ -26,6 +26,8 @@ export default class LoadingScene extends Phaser.Scene {
             frameWidth: 424, frameHeight: 361
         });
 
+        this.load.image('timer', 'assets/v2/timer.png')
+
         // houses
         this.load.image('house1', 'assets/v2/house1.png');
         this.load.image('house2', 'assets/v2/house2.png');

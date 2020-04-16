@@ -77,6 +77,10 @@ export default class Destructor extends Phaser.Physics.Arcade.Sprite {
         this._moveBack = false
     }
 
+    stop() {
+        this.setVelocity(0, 0)
+    }
+
     startMovingToHouse(house: Phaser.GameObjects.GameObject) {
         this._moveBack = false;
         this._targetHouse = house;

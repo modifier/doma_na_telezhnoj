@@ -7,7 +7,7 @@
         "dev": "rollup --config rollup.config.dev.js",
         "build": "npm run clear-docs && rollup --config rollup.config.dist.js && npm run copy-assets",
         "watch": "rollup --watch --config rollup.config.dev.js",
-        "copy-assets": "cpx 'dist/assets/**/*' ./docs/assets",
+       "copy-assets": "cpx dist/assets/**/* ./docs/assets",
         "clear-docs": "rimraf docs/*"
     },
     "repository": {

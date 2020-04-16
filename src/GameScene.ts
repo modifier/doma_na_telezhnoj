@@ -1,4 +1,6 @@
 import Destructor from "./Destructor";
+import {GameState} from "./GameState";
+import POINTER_UP = Phaser.Input.Events.POINTER_UP;
 
 const PERSON_VELOCITY = 260;
 const DESTRUCTOR_VELOCITY = 70;
@@ -71,7 +73,22 @@ export default class GameScene extends Phaser.Scene {
         });
 
         this.cursorKeys = this.input.keyboard.createCursorKeys();
-        this.moveKeys = this.input.keyboard.addKeys('W,A,S,D')
+        this.moveKeys = this.input.keyboard.addKeys('W,A,S,D');
+
+        //sound
+        const backgroundMusic = this.sound.add('music', {volume: 0.3, loop: true});
+        backgroundMusic.play();
+        const musicIcon = this.add.image(773, 25, 'music_on').setScale(0.1).setInteractive();
+        musicIcon.on(POINTER_UP, () => {
+            GameState.soundOn = !GameState.soundOn
+            if (GameState.soundOn) {
+                backgroundMusic.play();
+                musicIcon.setTexture('music_on');
+            } else {
+                backgroundMusic.pause();
+                musicIcon.setTexture('music_off');
+            }
+        })
     }
 
     update(time: number, delta: number): void {

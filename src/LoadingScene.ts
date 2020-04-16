@@ -32,6 +32,12 @@ export default class LoadingScene extends Phaser.Scene {
         this.load.image('house3', 'assets/v2/house3.png');
         this.load.image('house4', 'assets/v2/house4.png');
 
+        //sound
+        this.load.image('music_on', 'assets/v2/music-on.png');
+        this.load.image('music_off', 'assets/v2/music-off.png');
+
+        this.load.audio('music', 'assets/music.mp3');
+
         this.load.start()
     }
 

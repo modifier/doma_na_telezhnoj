@@ -30,7 +30,8 @@ export default class GameScene extends Phaser.Scene {
         this.destructors = [
             new Destructor(this, 100, 650, 'destructor1', DESTRUCTOR_VELOCITY - 10),
             new Destructor(this, 300, 650, 'destructor2', DESTRUCTOR_VELOCITY),
-            new Destructor(this, 800, 750, 'destructor3', DESTRUCTOR_VELOCITY + 40)
+            new Destructor(this, 800, 750, 'destructor3', DESTRUCTOR_VELOCITY + 40),
+            new Destructor(this, 500, 1000, 'destructor2', DESTRUCTOR_VELOCITY + 60)
         ];
 
         this.physics.world.on('worldbounds', () => {

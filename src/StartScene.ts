@@ -35,6 +35,7 @@ export default class StartScene extends Phaser.Scene {
             .setOrigin(0.5)
             .setInteractive()
 
+        startGameText.setShadow(1, 1, '#000000', null, null, true);
         startGameText.on(GAMEOBJECT_POINTER_UP, () => {
             this.scene.start('game_scene')
             GameState.resetGame()

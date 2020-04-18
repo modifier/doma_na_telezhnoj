@@ -39,7 +39,7 @@ export default class Timer {
     update() {
         if (this.timer) {
             this.timerText.setText(this._getTimerText())
-            this.timerText.setShadow(2, 2, this._getTimerColor(), null, null, true);
+            this.timerText.setShadow(1, 1, this._getTimerColor(), null, null, true);
             this.timerText.setColor(this._getTimerColor())
         }
     }

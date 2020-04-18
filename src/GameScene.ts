@@ -158,12 +158,19 @@ export default class GameScene extends Phaser.Scene {
 
     destructorOverlapHouse = (destructor: Destructor, house: Phaser.Physics.Arcade.Sprite) => {
         house.disableBody(true, true);
+        this._playCrashSound()
         destructor.startMovingBack();
         if (this._getAliveHouses().length == 0) {
             this._stopGameOnDestroyAllHouses()
         }
         // TODO disable only target house
         // TODO only for one destructor should call (need to use texture key)
+    }
+
+    _playCrashSound() {
+        if (GameState.soundOn){
+            this.sound.play('crash', {volume: 0.3, rate: 0.7})
+        }
     }
 
     _isPersonWalk_left() {

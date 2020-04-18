@@ -11,9 +11,11 @@ export default class GameEndScene extends Phaser.Scene {
         if (GameState.aliveHouses > 0) {
             person.setFrame(6)
             this.sound.removeByKey('destructor_sound')
+            this._playSoundByKey('success');
         } else {
             person.setFrame(5)
             this.sound.removeByKey('music');
+            this._playSoundByKey('fail');
         }
         this.add.existing(person)
         houses.forEach(h => this.add.existing(h))
@@ -60,5 +62,11 @@ export default class GameEndScene extends Phaser.Scene {
 
         this.sound.removeByKey('destructor_sound');
         this.sound.removeByKey('music');
+    }
+
+    _playSoundByKey(key) {
+        if (GameState.soundOn) {
+            this.sound.play(key, {volume: 0.3, rate: 0.7});
+        }
     }
 }

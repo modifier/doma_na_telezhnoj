@@ -12,6 +12,8 @@ export default class GameScene extends Phaser.Scene {
     cursorKeys = null;
     moveKeys = null;
     timer: Timer = null;
+    backgroundMusic: Phaser.Sound.BaseSound = null;
+    destructorSound: Phaser.Sound.BaseSound = null;
 
     constructor() {
         super('game_scene');
@@ -80,14 +82,19 @@ export default class GameScene extends Phaser.Scene {
 
 
         //sound
-        const backgroundMusic = this.sound.add('music', {volume: 0.3, loop: true});
+        this.backgroundMusic = this.sound.add('music', {volume: 0.7, loop: true, rate: 1.2});
+        this.destructorSound = this.sound.add('destructor_sound', {volume: 1, loop: true, rate: 1, delay: 2});
+        this.backgroundMusic.play();
+        this.destructorSound.play();
         const musicIcon = this.add.image(773, 25, 'music_on').setScale(0.1).setInteractive();
         const toggleSound = (on) => {
             if (on) {
-                backgroundMusic.play();
+                this.backgroundMusic.resume();
+                this.destructorSound.resume();
                 musicIcon.setTexture('music_on');
             } else {
-                backgroundMusic.pause();
+                this.backgroundMusic.pause();
+                this.destructorSound.pause();
                 musicIcon.setTexture('music_off');
             }
         }
@@ -201,6 +208,11 @@ export default class GameScene extends Phaser.Scene {
         this.person.anims.stop()
 
         GameState.aliveHouses = this._getAliveHouses().length;
+        if (GameState.aliveHouses) {
+            this.destructorSound.stop();
+        } else {
+            this.backgroundMusic.stop();
+        }
 
         this.scene.launch('game_end_scene', {
             person: this.person,

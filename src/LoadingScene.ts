@@ -39,6 +39,7 @@ export default class LoadingScene extends Phaser.Scene {
         this.load.image('music_off', 'assets/v2/music-off.png');
 
         this.load.audio('music', 'assets/music.mp3');
+        this.load.audio('destructor_sound', 'assets/destructor.wav');
 
         this.load.start()
     }

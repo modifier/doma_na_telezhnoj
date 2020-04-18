@@ -4,7 +4,8 @@ class GameState extends EventEmitter {
     constructor() {
         super();
 
-        this._soundOn = localStorage.getItem('game:sound_on') == '1'
+        const storageSoundOn = localStorage.getItem('game:sound_on')
+        this._soundOn = storageSoundOn == null ? true : storageSoundOn == '1'
     }
 
     private _gameFinish: boolean = false

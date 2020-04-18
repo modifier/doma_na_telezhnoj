@@ -7,6 +7,12 @@ const TextureToScale = {
     'destructor3': 0.3,
 }
 
+const TextureToYBodyOffset = {
+    'destructor1': 40,
+    'destructor2': 10,
+    'destructor3': 45,
+}
+
 export default class Destructor extends Phaser.Physics.Arcade.Sprite {
     _initVelocity: number;
     _initialX: number;
@@ -30,6 +36,10 @@ export default class Destructor extends Phaser.Physics.Arcade.Sprite {
 
         this.scene.add.existing(this);
         this.scene.physics.add.existing(this);
+        const bodyYOffset = TextureToYBodyOffset[texture]
+        this.body
+            .setSize(this.body.width, this.body.height - bodyYOffset)
+            .setOffset(0, bodyYOffset);
 
         this.setScale(TextureToScale[texture]);
         this.setCollideWorldBounds(false);

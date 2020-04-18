@@ -21,23 +21,6 @@ export default class GameScene extends Phaser.Scene {
     create() {
         this.add.image(400, 300, 'background')
 
-        this.person = this.physics.add
-            .sprite(700, 300, 'person')
-            .setScale(0.27)
-            .setCollideWorldBounds(true);
-
-        Destructor.initAnimations(this.anims)
-        this.destructors = [
-            new Destructor(this, 100, 650, 'destructor1', DESTRUCTOR_VELOCITY - 10),
-            new Destructor(this, 300, 650, 'destructor2', DESTRUCTOR_VELOCITY),
-            new Destructor(this, 800, 750, 'destructor3', DESTRUCTOR_VELOCITY + 40),
-            new Destructor(this, 500, 1000, 'destructor2', DESTRUCTOR_VELOCITY + 60, null, true)
-        ];
-
-        this.physics.world.on('worldbounds', () => {
-            console.log('bum')
-        });
-
         this.houses = this.physics.add.staticGroup();
         const housesYOffset = 50;
         const h1 = this.houses
@@ -57,8 +40,23 @@ export default class GameScene extends Phaser.Scene {
             .setSize(h4.body.width - 40, h4.body.height)
             .setOffset(0, 0);
 
+        this.person = this.physics.add
+            .sprite(700, 300, 'person')
+            .setScale(0.27)
+            .setCollideWorldBounds(true);
+
+        Destructor.initAnimations(this.anims)
+        this.destructors = [
+            new Destructor(this, 100, 650, 'destructor1', DESTRUCTOR_VELOCITY - 10),
+            new Destructor(this, 300, 650, 'destructor2', DESTRUCTOR_VELOCITY),
+            new Destructor(this, 800, 750, 'destructor3', DESTRUCTOR_VELOCITY + 40),
+            new Destructor(this, 500, 1000, 'destructor2', DESTRUCTOR_VELOCITY + 60, null, true)
+        ];
 
         // interactions of game objects
+        this.physics.world.on('worldbounds', () => {
+            console.log('bum')
+        });
         this.physics.add.collider(this.person, this.houses, this.personOverlapHouse);
         this.destructors.forEach(d => {
             this.physics.add.collider(d, this.houses, this.destructorOverlapHouse);

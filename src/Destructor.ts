@@ -1,5 +1,6 @@
 import TAU = Phaser.Math.TAU;
 import Point = Phaser.Geom.Point;
+import TimerEvent = Phaser.Time.TimerEvent;
 
 const TextureToScale = {
     'destructor1': 0.3,
@@ -20,6 +21,9 @@ export default class Destructor extends Phaser.Physics.Arcade.Sprite {
     _velocityAngleDiff: number = null;
     _moveBack: boolean = false;
     _targetHouse: Phaser.GameObjects.GameObject;
+    _moveBackTimer: TimerEvent;
+
+    _moveBackTimeConfig = null
 
     constructor(
         scene: Phaser.Scene,
@@ -54,6 +58,13 @@ export default class Destructor extends Phaser.Physics.Arcade.Sprite {
             },
             repeat: -1
         })
+
+        this._moveBackTimeConfig = {
+            delay: 1500,
+            callback: () => {
+                this.cancelMovingBack()
+            }
+        }
     }
 
     static initAnimations(anims: any) {
@@ -84,6 +95,7 @@ export default class Destructor extends Phaser.Physics.Arcade.Sprite {
     startMovingBack() {
         this._moveBack = true
         this._targetHouse = null
+        this._resetMoveBackTimer()
     }
 
     cancelMovingBack() {
@@ -143,5 +155,12 @@ export default class Destructor extends Phaser.Physics.Arcade.Sprite {
 
     _isTargetHouseAlive(): boolean {
         return this._targetHouse && this._targetHouse.active;
+    }
+
+    _resetMoveBackTimer() {
+        if (this._moveBackTimer) {
+            this._moveBackTimer.destroy()
+        }
+        this._moveBackTimer = this.scene.time.addEvent(this._moveBackTimeConfig)
     }
 }

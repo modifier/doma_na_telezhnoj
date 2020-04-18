@@ -27,7 +27,7 @@ export default class GameEndScene extends Phaser.Scene {
             centerX,
             centerY,
             this._getTextAboutHouses(),
-            {font: '40px Amatic SC', fill: '#000000', align: 'left'}
+            {font: '40px Amatic SC', fill: '#000000', align: 'left', backgroundColor: '#FFFFFF'}
         ).setOrigin(0.5)
 
         const resetIcon = this.add.image(773, 75, 'reset')

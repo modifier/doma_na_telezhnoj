@@ -37,13 +37,10 @@ export default class StartScene extends Phaser.Scene {
 
         startGameText.setShadow(1, 1, '#000000', null, null, true);
         startGameText.on(GAMEOBJECT_POINTER_UP, () => {
-            this.scene.start('game_scene')
-            GameState.resetGame()
+            this._startGame()
         })
-
         this.input.keyboard.on('keyup-ENTER', () => {
-            this.scene.start('game_scene')
-            GameState.resetGame()
+            this._startGame()
         })
 
         const person = this.add.image(centerX, centerY + 70, 'person', 4)
@@ -70,5 +67,11 @@ export default class StartScene extends Phaser.Scene {
 
 
         this.add.image(rightCorner - 150, centerY + 200, 'nav_buttons').setScale(0.25)
+    }
+
+    _startGame() {
+        GameState.resetGame()
+        this.scene.get('game_scene').scene.restart()
+        this.scene.start('game_scene')
     }
 }

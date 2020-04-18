@@ -2,7 +2,7 @@ import Text = Phaser.GameObjects.Text;
 import TimerEvent = Phaser.Time.TimerEvent;
 
 export default class Timer {
-    timerValueInSeconds: number = 15 // TODO change
+    timerValueInSeconds: number = 60 + 1
     scene: Phaser.Scene
     timer: TimerEvent
     timerText: Text
@@ -24,7 +24,7 @@ export default class Timer {
             '0:00',
             {font: '40px Amatic SC'}
         )
-        this.timer = this.scene.time.delayedCall(this.timerValueInSeconds * 1000, onTimeEnd)
+        this.timer = this.scene.time.delayedCall((this.timerValueInSeconds) * 1000, onTimeEnd)
         this.timer.paused = true
     }
 

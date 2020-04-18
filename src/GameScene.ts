@@ -12,6 +12,7 @@ export default class GameScene extends Phaser.Scene {
     cursorKeys = null;
     moveKeys = null;
     timer: Timer = null;
+    soundIcon: Phaser.GameObjects.Image
     backgroundMusic: Phaser.Sound.BaseSound = null;
     destructorSound: Phaser.Sound.BaseSound = null;
 
@@ -86,22 +87,30 @@ export default class GameScene extends Phaser.Scene {
         this.destructorSound = this.sound.add('destructor_sound', {volume: 1, loop: true, rate: 1, delay: 2});
         this.backgroundMusic.play();
         this.destructorSound.play();
-        const musicIcon = this.add.image(773, 25, 'music_on').setScale(0.1).setInteractive();
+        this.soundIcon = this.add.image(773, 25, 'music_on').setScale(0.1).setInteractive();
         const toggleSound = (on) => {
             if (on) {
                 this.backgroundMusic.resume();
                 this.destructorSound.resume();
-                musicIcon.setTexture('music_on');
+                this.soundIcon.setTexture('music_on');
             } else {
                 this.backgroundMusic.pause();
                 this.destructorSound.pause();
-                musicIcon.setTexture('music_off');
+                this.soundIcon.setTexture('music_off');
             }
         }
         toggleSound(GameState.soundOn)
-        musicIcon.on(POINTER_UP, () => {
+        this.soundIcon.on(POINTER_UP, () => {
             GameState.soundOn = !GameState.soundOn
             toggleSound(GameState.soundOn)
+        })
+
+        // restart
+        const resetIcon = this.add.image(773, 75, 'reset')
+            .setScale(0.22)
+            .setInteractive();
+        resetIcon.on(POINTER_UP, () => {
+            this._resetGame()
         })
 
         // timer
@@ -216,7 +225,13 @@ export default class GameScene extends Phaser.Scene {
 
         this.scene.launch('game_end_scene', {
             person: this.person,
-            houses: this._getAliveHouses()
+            houses: this._getAliveHouses(),
+            destructors: this.destructors,
+            additionalObjects: [this.soundIcon]
         })
+    }
+
+    _resetGame() {
+        this.scene.restart()
     }
 }

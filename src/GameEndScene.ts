@@ -1,20 +1,21 @@
 import GameState from "./GameState";
+import POINTER_UP = Phaser.Input.Events.POINTER_UP;
 
-export default class GameScene extends Phaser.Scene {
+export default class GameEndScene extends Phaser.Scene {
     constructor(props) {
         super('game_end_scene');
 
     }
 
-    create({person, houses}) {
+    create({person, houses, destructors, additionalObjects}) {
         if (GameState.aliveHouses > 0) {
             person.setFrame(6)
         } else {
             person.setFrame(5)
         }
         this.add.existing(person)
-
         houses.forEach(h => this.add.existing(h))
+        additionalObjects.forEach(o => this.add.existing(o))
 
         this.cameras.main.setBackgroundColor('rgba(255, 255, 255, 0.5)')
         const centerY = this.cameras.main.centerY
@@ -26,6 +27,13 @@ export default class GameScene extends Phaser.Scene {
             this._getTextAboutHouses(),
             {font: '40px Amatic SC', fill: '#000000', align: 'left'}
         ).setOrigin(0.5)
+
+        const resetIcon = this.add.image(773, 75, 'reset')
+            .setScale(0.22)
+            .setInteractive();
+        resetIcon.on(POINTER_UP, () => {
+            this._restartGame()
+        })
     }
 
     _getTextAboutHouses() {
@@ -42,5 +50,10 @@ export default class GameScene extends Phaser.Scene {
             default:
                 return 'Вы не спасли ни одного дома :('
         }
+    }
+
+    _restartGame() {
+        this.scene.stop('game_scene');
+        this.scene.start('start_scene');
     }
 }

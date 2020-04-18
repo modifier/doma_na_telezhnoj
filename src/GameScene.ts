@@ -13,6 +13,7 @@ export default class GameScene extends Phaser.Scene {
     moveKeys = null;
     timer: Timer = null;
     soundIcon: Phaser.GameObjects.Image
+    pointer: Phaser.Input.Pointer
 
     constructor() {
         super('game_scene');
@@ -79,6 +80,7 @@ export default class GameScene extends Phaser.Scene {
 
         this.cursorKeys = this.input.keyboard.createCursorKeys();
         this.moveKeys = this.input.keyboard.addKeys('W,A,S,D');
+        this.pointer = this.input.pointer1;
 
 
         //sound
@@ -121,27 +123,32 @@ export default class GameScene extends Phaser.Scene {
         if (GameState.gameFinish) return
 
         const person = this.person;
+        let velocityX = 0;
+        let velocityY = 0;
+        if (this.pointer && this.pointer.active) {
+            const angle = Phaser.Math.Angle.Between(person.x, person.y, this.pointer.x, this.pointer.y);
+            const velocity = this.physics.velocityFromRotation(angle, PERSON_VELOCITY);
+            velocityX = velocity.x;
+            velocityY = velocity.y
+        } else {
+            if (this._isPersonWalk_left()) {
+                velocityX = -1 * PERSON_VELOCITY
+            } else if (this._isPersonWalk_right()) {
+                velocityX = PERSON_VELOCITY
+            }
+            if (this._isPersonWalk_up()) {
+                velocityY = -1 * PERSON_VELOCITY
+            } else if (this._isPersonWalk_down()) {
+                velocityY = PERSON_VELOCITY
+            }
+        }
 
-        if (this._isPersonWalk()) {
+        person.setVelocity(velocityX, velocityY);
+        if (velocityX != 0 || velocityY != 0) {
             person.anims.play('person_walk', true);
         } else {
             person.anims.play('person_stay', true);
         }
-        let velocityX = 0;
-        if (this._isPersonWalk_left()) {
-            velocityX = -1 * PERSON_VELOCITY
-        } else if (this._isPersonWalk_right()) {
-            velocityX = PERSON_VELOCITY
-        }
-
-        let velocityY = 0;
-        if (this._isPersonWalk_up()) {
-            velocityY = -1 * PERSON_VELOCITY
-        } else if (this._isPersonWalk_down()) {
-            velocityY = PERSON_VELOCITY
-        }
-
-        person.setVelocity(velocityX, velocityY);
 
         const aliveHouses = this._getAliveHouses();
 
@@ -169,7 +176,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     _playCrashSound() {
-        if (GameState.soundOn){
+        if (GameState.soundOn) {
             this.sound.play('crash', {volume: 0.3, rate: 0.7})
         }
     }

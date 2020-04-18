@@ -13,8 +13,6 @@ export default class GameScene extends Phaser.Scene {
     moveKeys = null;
     timer: Timer = null;
     soundIcon: Phaser.GameObjects.Image
-    backgroundMusic: Phaser.Sound.BaseSound = null;
-    destructorSound: Phaser.Sound.BaseSound = null;
 
     constructor() {
         super('game_scene');
@@ -83,19 +81,17 @@ export default class GameScene extends Phaser.Scene {
 
 
         //sound
-        this.backgroundMusic = this.sound.add('music', {volume: 0.7, loop: true, rate: 1.2});
-        this.destructorSound = this.sound.add('destructor_sound', {volume: 1, loop: true, rate: 1, delay: 2});
-        this.backgroundMusic.play();
-        this.destructorSound.play();
+        const music = this.sound.add('music', {volume: 0.7, loop: true, rate: 1.2});
+        music.play()
+        const destructorSound = this.sound.add('destructor_sound', {volume: 0.8, loop: true, rate: 1, delay: 2});
+        destructorSound.play()
         this.soundIcon = this.add.image(773, 25, 'music_on').setScale(0.1).setInteractive();
         const toggleSound = (on) => {
             if (on) {
-                this.backgroundMusic.resume();
-                this.destructorSound.resume();
+                this.sound.resumeAll()
                 this.soundIcon.setTexture('music_on');
             } else {
-                this.backgroundMusic.pause();
-                this.destructorSound.pause();
+                this.sound.pauseAll()
                 this.soundIcon.setTexture('music_off');
             }
         }
@@ -217,11 +213,6 @@ export default class GameScene extends Phaser.Scene {
         this.person.anims.stop()
 
         GameState.aliveHouses = this._getAliveHouses().length;
-        if (GameState.aliveHouses) {
-            this.destructorSound.stop();
-        } else {
-            this.backgroundMusic.stop();
-        }
 
         this.scene.launch('game_end_scene', {
             person: this.person,
@@ -233,5 +224,8 @@ export default class GameScene extends Phaser.Scene {
 
     _resetGame() {
         this.scene.restart()
+
+        this.sound.removeByKey('destructor_sound');
+        this.sound.removeByKey('music');
     }
 }

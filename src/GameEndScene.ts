@@ -10,8 +10,10 @@ export default class GameEndScene extends Phaser.Scene {
     create({person, houses, destructors, additionalObjects}) {
         if (GameState.aliveHouses > 0) {
             person.setFrame(6)
+            this.sound.removeByKey('destructor_sound')
         } else {
             person.setFrame(5)
+            this.sound.removeByKey('music');
         }
         this.add.existing(person)
         houses.forEach(h => this.add.existing(h))
@@ -55,5 +57,8 @@ export default class GameEndScene extends Phaser.Scene {
     _restartGame() {
         this.scene.stop('game_scene');
         this.scene.start('start_scene');
+
+        this.sound.removeByKey('destructor_sound');
+        this.sound.removeByKey('music');
     }
 }

@@ -31,7 +31,7 @@ export default class GameScene extends Phaser.Scene {
             new Destructor(this, 100, 650, 'destructor1', DESTRUCTOR_VELOCITY - 10),
             new Destructor(this, 300, 650, 'destructor2', DESTRUCTOR_VELOCITY),
             new Destructor(this, 800, 750, 'destructor3', DESTRUCTOR_VELOCITY + 40),
-            new Destructor(this, 500, 1000, 'destructor2', DESTRUCTOR_VELOCITY + 60)
+            new Destructor(this, 500, 1000, 'destructor2', DESTRUCTOR_VELOCITY + 60, null, true)
         ];
 
         this.physics.world.on('worldbounds', () => {
@@ -42,10 +42,13 @@ export default class GameScene extends Phaser.Scene {
         const housesYOffset = 50;
         const h1 = this.houses
             .create(220, 95 + housesYOffset, 'house1').setScale(0.2).refreshBody();
+        h1.body.setSize(h1.body.width - 36, h1.body.height).setOffset(0, 0)
         const h2 = this.houses
             .create(h1.x + h1.displayWidth - 42, 126.5 + housesYOffset, 'house2').setScale(0.2).refreshBody();
+        h2.body.setSize(h2.body.width - 27, h2.body.height).setOffset(0, 0)
         const h3 = this.houses
             .create(h2.x + h2.displayWidth - 22, 104 + housesYOffset, 'house3').setScale(0.2).refreshBody();
+        h3.body.setSize(h3.body.width - 35, h3.body.height).setOffset(0, 0)
         const h4 = this.houses
             .create(h3.x + h3.displayWidth - 57, 113 + housesYOffset, 'house4')
             .setScale(0.2)

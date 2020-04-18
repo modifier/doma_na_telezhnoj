@@ -28,6 +28,7 @@ export default class Destructor extends Phaser.Physics.Arcade.Sprite {
         texture: string,
         initVelocity: number,
         frame?: string | number,
+        flipX: boolean = false
     ) {
         super(scene, x, y, texture, frame);
         this._initialX = x;
@@ -35,6 +36,7 @@ export default class Destructor extends Phaser.Physics.Arcade.Sprite {
         this._initVelocity = initVelocity;
 
         this.scene.add.existing(this);
+        this.flipX = flipX
         this.scene.physics.add.existing(this);
         const bodyYOffset = TextureToYBodyOffset[texture]
         this.body
@@ -81,6 +83,7 @@ export default class Destructor extends Phaser.Physics.Arcade.Sprite {
 
     startMovingBack() {
         this._moveBack = true
+        this._targetHouse = null
     }
 
     cancelMovingBack() {
@@ -116,24 +119,29 @@ export default class Destructor extends Phaser.Physics.Arcade.Sprite {
 
     update(aliveHouses, ...args): void {
         super.update(...args);
-        let targetHouseActive = this._targetHouse && this._targetHouse.active;
 
-        // TODO update target only if not moving back
-        if (!targetHouseActive || Phaser.Geom.Rectangle.ContainsPoint(this.getBounds(), new Point(this._initialX, this._initialY))) {
-            if (aliveHouses.length > 0) {
-                let index = Math.ceil(Math.random() * (aliveHouses.length - 1));
-                this.startMovingToHouse(aliveHouses[index]);
-            } else {
-                this.startMovingToHouse(null);
-            }
+        if (aliveHouses.length == 0) {
+            this.startMovingToHouse(null)
+            return
         }
 
         if (this._moveBack) {
+            if (Phaser.Geom.Rectangle.ContainsPoint(this.getBounds(), new Point(this._initialX, this._initialY))) {
+                this.cancelMovingBack()
+            }
             this._moveToStartPosition();
         } else {
+            if (!this._isTargetHouseAlive()) {
+                let index = Math.ceil(Math.random() * (aliveHouses.length - 1));
+                this.startMovingToHouse(aliveHouses[index]);
+            }
             this._moveToHouse();
         }
 
         this.play(`${this.texture.key}_move`, true);
+    }
+
+    _isTargetHouseAlive(): boolean {
+        return this._targetHouse && this._targetHouse.active;
     }
 }

@@ -1,6 +1,6 @@
 import Destructor from "./Destructor";
 import Timer from "./Timer";
-import {GameState} from "./GameState";
+import GameState from "./GameState";
 import POINTER_UP = Phaser.Input.Events.POINTER_UP;
 
 const PERSON_VELOCITY = 260;
@@ -12,7 +12,6 @@ export default class GameScene extends Phaser.Scene {
     cursorKeys = null;
     moveKeys = null;
     timer: Timer = null;
-    gameEnded: boolean = false;
 
     constructor() {
         super('game_scene');
@@ -79,21 +78,26 @@ export default class GameScene extends Phaser.Scene {
         this.cursorKeys = this.input.keyboard.createCursorKeys();
         this.moveKeys = this.input.keyboard.addKeys('W,A,S,D');
 
+
         //sound
         const backgroundMusic = this.sound.add('music', {volume: 0.3, loop: true});
-        backgroundMusic.play();
         const musicIcon = this.add.image(773, 25, 'music_on').setScale(0.1).setInteractive();
-        musicIcon.on(POINTER_UP, () => {
-            GameState.soundOn = !GameState.soundOn
-            if (GameState.soundOn) {
+        const toggleSound = (on) => {
+            if (on) {
                 backgroundMusic.play();
                 musicIcon.setTexture('music_on');
             } else {
                 backgroundMusic.pause();
                 musicIcon.setTexture('music_off');
             }
+        }
+        toggleSound(GameState.soundOn)
+        musicIcon.on(POINTER_UP, () => {
+            GameState.soundOn = !GameState.soundOn
+            toggleSound(GameState.soundOn)
         })
 
+        // timer
         this.timer = new Timer(this, 350, 10, () => {
             this._stopGameOnTime()
         });
@@ -101,7 +105,7 @@ export default class GameScene extends Phaser.Scene {
     }
 
     update(time: number, delta: number): void {
-        if (this.gameEnded) return
+        if (GameState.gameFinish) return
 
         const person = this.person;
 
@@ -188,10 +192,19 @@ export default class GameScene extends Phaser.Scene {
     }
 
     _processStop() {
-        this.gameEnded = true;
+        GameState.gameFinish = true;
+
         this.destructors.forEach(d => {
             d.stop()
         });
         this.person.setVelocity(0);
+        this.person.anims.stop()
+
+        GameState.aliveHouses = this._getAliveHouses().length;
+
+        this.scene.launch('game_end_scene', {
+            person: this.person,
+            houses: this._getAliveHouses()
+        })
     }
 }

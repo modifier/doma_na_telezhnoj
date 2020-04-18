@@ -3,7 +3,7 @@ import 'phaser';
 import LoadingScene from "./LoadingScene";
 import StartScene from "./StartScene";
 import GameScene from "./GameScene";
-
+import GameEndScene from "./GameEndScene";
 
 // @ts-ignore
 const development = DEVELOPMENT_MODE
@@ -23,7 +23,8 @@ const config = {
     scene: [
         LoadingScene,
         StartScene,
-        GameScene
+        GameScene,
+        GameEndScene
     ]
 };
 

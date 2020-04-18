@@ -2,7 +2,7 @@ import Text = Phaser.GameObjects.Text;
 import TimerEvent = Phaser.Time.TimerEvent;
 
 export default class Timer {
-    timerValueInSeconds: number = 60
+    timerValueInSeconds: number = 15 // TODO change
     scene: Phaser.Scene
     timer: TimerEvent
     timerText: Text

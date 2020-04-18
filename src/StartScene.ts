@@ -1,6 +1,7 @@
 import GAMEOBJECT_POINTER_UP = Phaser.Input.Events.GAMEOBJECT_POINTER_UP;
 import GAMEOBJECT_OVER = Phaser.Input.Events.GAMEOBJECT_OVER;
 import GAMEOBJECT_OUT = Phaser.Input.Events.GAMEOBJECT_OUT;
+import GameState from "./GameState";
 
 export default class StartScene extends Phaser.Scene {
     constructor() {
@@ -36,10 +37,12 @@ export default class StartScene extends Phaser.Scene {
 
         startGameText.on(GAMEOBJECT_POINTER_UP, () => {
             this.scene.start('game_scene')
+            GameState.resetGame()
         })
 
         this.input.keyboard.on('keyup-ENTER', () => {
             this.scene.start('game_scene')
+            GameState.resetGame()
         })
 
         const person = this.add.image(centerX, centerY + 70, 'person', 4)

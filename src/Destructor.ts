@@ -14,16 +14,29 @@ const TextureToYBodyOffset = {
     'destructor3': 45,
 }
 
+const MOVE_BACK_TIME_MS = 1500;
+const MOVE_BACK_DELAYED = 3000;
+
 export default class Destructor extends Phaser.Physics.Arcade.Sprite {
     _initVelocity: number;
     _initialX: number;
     _initialY: number;
     _velocityAngleDiff: number = null;
-    _moveBack: boolean = false;
     _targetHouse: Phaser.GameObjects.GameObject;
+
+
+    _preventResetMoveBackTimer: boolean = false;
+    _moveBack: boolean = false;
     _moveBackTimer: TimerEvent;
 
-    _moveBackTimeConfig = null
+    _stopped: boolean = false;
+
+    _moveBackTimeConfig = {
+        delay: 1500,
+        callback: () => {
+            this.cancelMovingBack()
+        }
+    }
 
     constructor(
         scene: Phaser.Scene,
@@ -58,13 +71,6 @@ export default class Destructor extends Phaser.Physics.Arcade.Sprite {
             },
             repeat: -1
         })
-
-        this._moveBackTimeConfig = {
-            delay: 1500,
-            callback: () => {
-                this.cancelMovingBack()
-            }
-        }
     }
 
     static initAnimations(anims: any) {
@@ -92,18 +98,41 @@ export default class Destructor extends Phaser.Physics.Arcade.Sprite {
         return this._targetHouse
     }
 
+    isMovingBack(): boolean {
+        return this._moveBack
+    }
+
     startMovingBack() {
+        if (this._preventResetMoveBackTimer) return
+
         this._moveBack = true
         this._targetHouse = null
         this._resetMoveBackTimer()
     }
 
-    cancelMovingBack() {
+    startMovingBackDelayed() {
+        this._moveBack = true
+        this._targetHouse = null
+        this._preventResetMoveBackTimer = true
+        this._resetMoveBackTimer(MOVE_BACK_DELAYED)
+    }
+
+    cancelMovingBack = () => {
         this._moveBack = false
+        this._preventResetMoveBackTimer = false
+    }
+
+    isStopped() {
+        return this._stopped
     }
 
     stop() {
         this.setVelocity(0, 0)
+        this._stopped = true
+    }
+
+    unstop() {
+        this._stopped = false
     }
 
     startMovingToHouse(house: Phaser.GameObjects.GameObject) {
@@ -132,6 +161,8 @@ export default class Destructor extends Phaser.Physics.Arcade.Sprite {
     update(aliveHouses, ...args): void {
         super.update(...args);
 
+        if (this._stopped) return;
+
         if (aliveHouses.length == 0) {
             this.startMovingToHouse(null)
             return
@@ -157,10 +188,13 @@ export default class Destructor extends Phaser.Physics.Arcade.Sprite {
         return this._targetHouse && this._targetHouse.active;
     }
 
-    _resetMoveBackTimer() {
+    _resetMoveBackTimer(timeMs: number = MOVE_BACK_TIME_MS, cb: Function = this.cancelMovingBack) {
         if (this._moveBackTimer) {
             this._moveBackTimer.destroy()
         }
-        this._moveBackTimer = this.scene.time.addEvent(this._moveBackTimeConfig)
+        this._moveBackTimer = this.scene.time.addEvent({
+            delay: timeMs,
+            callback: () => cb()
+        })
     }
 }

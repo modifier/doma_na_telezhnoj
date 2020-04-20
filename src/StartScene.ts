@@ -67,6 +67,13 @@ export default class StartScene extends Phaser.Scene {
 
 
         this.add.image(rightCorner - 150, centerY + 200, 'nav_buttons').setScale(0.25)
+
+        // additional controls
+        this.add.image(40, 45, 'send_letter').setScale(0.3);
+        this.add.text(70, 35, 'Отправь письмо в КГИОП! (жми 1)', {font: '28px Amatic SC', fill: '#000000'})
+
+        this.add.image(40, 95, 'vote_stop').setScale(0.3);
+        this.add.text(70, 85, 'Вырази свой протест! (жми 2)', {font: '28px Amatic SC', fill: '#000000'})
     }
 
     _startGame() {

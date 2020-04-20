@@ -5,15 +5,22 @@ import POINTER_UP = Phaser.Input.Events.POINTER_UP;
 
 const PERSON_VELOCITY = 260;
 const DESTRUCTOR_VELOCITY = 70;
+const VOTE_STOP_DELAY_MS = 2000;
+
 export default class GameScene extends Phaser.Scene {
     person = null;
     destructors: Destructor[];
     houses: Phaser.Physics.Arcade.StaticGroup = null;
+
+    soundIcon: Phaser.GameObjects.Image;
+    sendLetterIcon: Phaser.GameObjects.Image;
+    voteStopIcon: Phaser.GameObjects.Image;
+
+    timer: Timer = null;
+
     cursorKeys = null;
     moveKeys = null;
-    timer: Timer = null;
-    soundIcon: Phaser.GameObjects.Image
-    pointer: Phaser.Input.Pointer
+    pointer: Phaser.Input.Pointer;
 
     constructor() {
         super('game_scene');
@@ -80,8 +87,18 @@ export default class GameScene extends Phaser.Scene {
 
         this.cursorKeys = this.input.keyboard.createCursorKeys();
         this.moveKeys = this.input.keyboard.addKeys('W,A,S,D');
-        this.pointer = this.input.pointer1;
+        this.pointer = this.input.pointer1; // touch screen
 
+        // additional controls
+        this.sendLetterIcon = this.add.image(40, 45, 'send_letter')
+            .setScale(0.3).setInteractive();
+        this.sendLetterIcon.on(POINTER_UP, () => this._processSendLetter())
+        this.input.keyboard.on('keyup-ONE', () => this._processSendLetter())
+
+        this.voteStopIcon = this.add.image(40, 95, 'vote_stop')
+            .setScale(0.3).setInteractive();
+        this.voteStopIcon.on(POINTER_UP, () => this._processVoteStop())
+        this.input.keyboard.on('keyup-TWO', () => this._processVoteStop())
 
         //sound
         const music = this.sound.add('music', {volume: 0.7, loop: true, rate: 1.2});
@@ -161,16 +178,23 @@ export default class GameScene extends Phaser.Scene {
     }
 
     personOverlapDestructor(person, destructor: Destructor) {
+        if (destructor.isStopped()) return
+
         destructor.startMovingBack();
     }
 
     destructorOverlapHouse = (destructor: Destructor, house: Phaser.Physics.Arcade.Sprite) => {
-        house.disableBody(true, true);
+        if (destructor.isMovingBack())
+            return
+
         this._playCrashSound()
+        house.disableBody(true, true);
+
         destructor.startMovingBack();
         if (this._getAliveHouses().length == 0) {
             this._stopGameOnDestroyAllHouses()
         }
+
         // TODO disable only target house
         // TODO only for one destructor should call (need to use texture key)
     }
@@ -197,13 +221,6 @@ export default class GameScene extends Phaser.Scene {
         return this.cursorKeys.down.isDown || this.moveKeys.S.isDown
     }
 
-    _isPersonWalk() {
-        return this._isPersonWalk_left() ||
-            this._isPersonWalk_right() ||
-            this._isPersonWalk_up() ||
-            this._isPersonWalk_down()
-    }
-
     _getAliveHouses() {
         return this.houses.children.entries.filter(h => h.active);
     }
@@ -216,6 +233,32 @@ export default class GameScene extends Phaser.Scene {
     _stopGameOnTime() {
         this._processStop();
         console.log('alive houses ' + this._getAliveHouses().length);
+    }
+
+    _processSendLetter() {
+        this.destructors.forEach(d => {
+            d.startMovingBackDelayed()
+        })
+
+        this.sendLetterIcon.input.enabled = false
+        this.sendLetterIcon.setAlpha(0.5)
+    }
+
+    _processVoteStop() {
+        this.destructors.forEach(d => {
+            d.stop()
+        })
+        this.scene.scene.time.addEvent({
+            delay: VOTE_STOP_DELAY_MS,
+            callback: () => {
+                this.destructors.forEach(d => {
+                    d.unstop()
+                })
+            }
+        })
+
+        this.voteStopIcon.input.enabled = false
+        this.voteStopIcon.setAlpha(0.5)
     }
 
     _processStop() {

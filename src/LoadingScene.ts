@@ -29,6 +29,9 @@ export default class LoadingScene extends Phaser.Scene {
         this.load.image('timer', 'assets/v2/timer.png')
         this.load.image('reset', 'assets/v2/reset-button.png')
 
+        this.load.image('vote_stop', 'assets/v2/action1.png');
+        this.load.image('send_letter', 'assets/v2/action2.png');
+
         // houses
         this.load.image('house1', 'assets/v2/house1.png');
         this.load.image('house2', 'assets/v2/house2.png');

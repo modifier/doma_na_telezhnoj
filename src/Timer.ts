@@ -15,8 +15,7 @@ export default class Timer {
     ) {
         this.scene = scene
 
-        this.scene.add.image(x, y + 17, 'timer')
-            .setScale(0.2);
+        this.scene.add.image(x, y + 17, 'timer');
 
         this.timerText = this.scene.add.text(
             x + 30,

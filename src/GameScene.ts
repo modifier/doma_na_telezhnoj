@@ -32,25 +32,24 @@ export default class GameScene extends Phaser.Scene {
         this.houses = this.physics.add.staticGroup();
         const housesYOffset = 50;
         const h1 = this.houses
-            .create(220, 95 + housesYOffset, 'house1').setScale(0.2).refreshBody();
+            .create(220, 95 + housesYOffset, 'house1');
         h1.body.setSize(h1.body.width - 36, h1.body.height).setOffset(0, 0)
         const h2 = this.houses
-            .create(h1.x + h1.displayWidth - 42, 126.5 + housesYOffset, 'house2').setScale(0.2).refreshBody();
+            .create(h1.x + h1.displayWidth - 42, 126.5 + housesYOffset, 'house2');
         h2.body.setSize(h2.body.width - 27, h2.body.height).setOffset(0, 0)
         const h3 = this.houses
-            .create(h2.x + h2.displayWidth - 22, 104 + housesYOffset, 'house3').setScale(0.2).refreshBody();
+            .create(h2.x + h2.displayWidth - 22, 104 + housesYOffset, 'house3');
         h3.body.setSize(h3.body.width - 35, h3.body.height).setOffset(0, 0)
         const h4 = this.houses
             .create(h3.x + h3.displayWidth - 57, 113 + housesYOffset, 'house4')
-            .setScale(0.2)
-            .refreshBody();
+
         h4.body
             .setSize(h4.body.width - 40, h4.body.height)
             .setOffset(0, 0);
 
         this.person = this.physics.add
             .sprite(700, 300, 'person')
-            .setScale(0.27)
+            .setScale(0.9)
             .setCollideWorldBounds(true);
 
         Destructor.initAnimations(this.anims)
@@ -90,13 +89,11 @@ export default class GameScene extends Phaser.Scene {
         this.pointer = this.input.pointer1; // touch screen
 
         // additional controls
-        this.sendLetterIcon = this.add.image(40, 45, 'send_letter')
-            .setScale(0.3).setInteractive();
+        this.sendLetterIcon = this.add.image(40, 45, 'send_letter').setInteractive();
         this.sendLetterIcon.on(POINTER_UP, () => this._processSendLetter())
         this.input.keyboard.on('keyup-ONE', () => this._processSendLetter())
 
-        this.voteStopIcon = this.add.image(40, 95, 'vote_stop')
-            .setScale(0.3).setInteractive();
+        this.voteStopIcon = this.add.image(40, 95, 'vote_stop').setInteractive();
         this.voteStopIcon.on(POINTER_UP, () => this._processVoteStop())
         this.input.keyboard.on('keyup-TWO', () => this._processVoteStop())
 
@@ -105,7 +102,7 @@ export default class GameScene extends Phaser.Scene {
         music.play()
         const destructorSound = this.sound.add('destructor_sound', {volume: 0.8, loop: true, rate: 1, delay: 2});
         destructorSound.play()
-        this.soundIcon = this.add.image(773, 25, 'music_on').setScale(0.1).setInteractive();
+        this.soundIcon = this.add.image(773, 25, 'music_on').setInteractive();
         const toggleSound = (on) => {
             if (on) {
                 this.sound.resumeAll()
@@ -122,9 +119,7 @@ export default class GameScene extends Phaser.Scene {
         })
 
         // restart
-        const resetIcon = this.add.image(773, 75, 'reset')
-            .setScale(0.22)
-            .setInteractive();
+        const resetIcon = this.add.image(773, 75, 'reset').setInteractive();
         resetIcon.on(POINTER_UP, () => {
             this._resetGame()
         })

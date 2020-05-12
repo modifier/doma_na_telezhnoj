@@ -14,16 +14,16 @@ export default class LoadingScene extends Phaser.Scene {
         this.load.image('nav_buttons', 'assets/v2/nav-buttons.png');
 
         this.load.spritesheet('person', 'assets/v2/person-animated.png', {
-            frameWidth: 194, frameHeight: 348
+            frameWidth: 59, frameHeight: 106
         });
         this.load.spritesheet('destructor1', 'assets/v2/destructor1-animated.png', {
-            frameWidth: 473, frameHeight: 280
+            frameWidth: 142, frameHeight: 84
         });
         this.load.spritesheet('destructor2', 'assets/v2/destructor2-animated.png', {
-            frameWidth: 363, frameHeight: 269
+            frameWidth: 109, frameHeight: 81
         });
         this.load.spritesheet('destructor3', 'assets/v2/destructor3-animated.png', {
-            frameWidth: 424, frameHeight: 361
+            frameWidth: 127, frameHeight: 108
         });
 
         this.load.image('timer', 'assets/v2/timer.png')

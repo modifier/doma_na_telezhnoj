@@ -3,15 +3,15 @@ import Point = Phaser.Geom.Point;
 import TimerEvent = Phaser.Time.TimerEvent;
 
 const TextureToScale = {
-    'destructor1': 0.3,
-    'destructor2': 0.3,
-    'destructor3': 0.3,
+    'destructor1': 1,
+    'destructor2': 1,
+    'destructor3': 1,
 }
 
 const TextureToYBodyOffset = {
-    'destructor1': 40,
-    'destructor2': 10,
-    'destructor3': 45,
+    'destructor1': 15,
+    'destructor2': 3,
+    'destructor3': 15,
 }
 
 const MOVE_BACK_TIME_MS = 1500;

@@ -33,7 +33,6 @@ export default class GameEndScene extends Phaser.Scene {
         ).setOrigin(0.5)
 
         const resetIcon = this.add.image(773, 75, 'reset')
-            .setScale(0.22)
             .setInteractive();
         resetIcon.on(POINTER_UP, () => {
             this._restartGame()

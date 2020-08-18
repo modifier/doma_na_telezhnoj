@@ -11,7 +11,7 @@ const config = {
     type: Phaser.AUTO,
     width: 800,
     height: 600,
-    canvasStyle: development ? 'outline: 1px solid red;' : '',
+    canvasStyle: development ? 'border: 1px solid red;' : '',
     physics: {
         default: 'arcade',
         arcade: {
@@ -19,7 +19,6 @@ const config = {
             debug: development
         }
     },
-    parent: document.getElementById('container'),
     resolution: window.devicePixelRatio,
     scene: [
         LoadingScene,
